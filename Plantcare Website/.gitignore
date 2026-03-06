@@ -1,0 +1,6 @@
+__pycache__/
+.env
+venv/
+plantcare/
+uploads/
+.DS_Store
