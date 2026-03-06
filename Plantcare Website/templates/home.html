@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<main style="flex: 1;">
+    <div class="hero">
+        <div class="hero-text">
+            <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem; line-height: 1.1;">Advanced Plant Disease Detection <br><span style="color: var(--primary-color);">Using AI</span></h1>
+            <p style="font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2.5rem;">Harnessing transfer learning to diagnose plant health instantly. Ensure your crops thrive with our high-accuracy biotech platform.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="{{ url_for('upload') }}" class="btn">Start Detection</a>
+                <a href="{{ url_for('about') }}" class="btn" style="background: transparent; border: 2px solid var(--primary-color); color: var(--text-color); box-shadow: none;">Our Technology</a>
+            </div>
+        </div>
+        <div class="hero-image-container">
+            <img src="{{ url_for('static', filename='Photos/leaf2.avif') }}" alt="Infected Leaf Analysis">
+        </div>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fa-solid fa-bolt"></i></div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Instant Detection</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Harness the power of transfer learning to diagnose plant pathologies in real-time. Our AI analyzes leaf metadata to deliver instant results.</p>
+        </div>
+        <div class="feature-card">
+            <div style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1.5rem;"><i class="fa-solid fa-bullseye"></i></div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">95% Accuracy</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Engineered for precision, PlantCare AI maintains mission-critical accuracy across 38+ diseases and 10+ common plant species.</p>
+        </div>
+        <div class="feature-card">
+            <div style="margin-bottom: 1.5rem;">
+                <img src="{{ url_for('static', filename='Photos/easy_to_use.avif') }}" alt="Easy to Use Icon" style="height: 50px;">
+            </div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Easy to Use</h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">Complex science made simple. Access sophisticated disease detection via an intuitive interface optimized for both lab and field use.</p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; padding: 4rem 10%; background: var(--nav-bg); text-align: center; border-top: 1px solid var(--border-color);">
+        <div class="stat"><h2 style="font-size: 3rem; color: var(--primary-color);">38+</h2><p style="color: var(--text-muted); font-weight: 600; font-size: 1.1rem;">Diseases Detectable</p></div>
+        <div class="stat"><h2 style="font-size: 3rem; color: var(--primary-color);">95%</h2><p style="color: var(--text-muted); font-weight: 600; font-size: 1.1rem;">Diagnosis Accuracy</p></div>
+        <div class="stat"><h2 style="font-size: 3rem; color: var(--primary-color);">10+</h2><p style="color: var(--text-muted); font-weight: 600; font-size: 1.1rem;">Species Supported</p></div>
+        <div class="stat"><h2 style="font-size: 3rem; color: var(--primary-color);">&lt;1s</h2><p style="color: var(--text-muted); font-weight: 600; font-size: 1.1rem;">Latency Period</p></div>
+    </div>
+
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <span>SMART PLANT DIAGNOSTICS &bull; AI DISEASE DETECTION &bull; HIGH ACCURACY &bull; PROTECT CROP YIELDS &bull; SMART PLANT DIAGNOSTICS &bull; AI DISEASE DETECTION &bull; HIGH ACCURACY &bull; PROTECT CROP YIELDS &bull;</span>
+            <span>SMART PLANT DIAGNOSTICS &bull; AI DISEASE DETECTION &bull; HIGH ACCURACY &bull; PROTECT CROP YIELDS &bull; SMART PLANT DIAGNOSTICS &bull; AI DISEASE DETECTION &bull; HIGH ACCURACY &bull; PROTECT CROP YIELDS &bull;</span>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,117 @@
+print("Starting up... Loading TensorFlow (this might take a minute!)...")
+import os
+import json
+import numpy as np
+from PIL import Image
+from flask import Flask, request, render_template, redirect, url_for
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import img_to_array
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+
+# Save uploads directly to the static folder so the browser can see them
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'avif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+MODEL_PATH = 'model/plant_disease_recog_model_pwp.keras'
+JSON_PATH = 'model/class_indices.json'
+
+try:
+    model = load_model(MODEL_PATH)
+    print("Model loaded successfully.")
+except Exception as e:
+    print(f"Error loading model: {e}")
+    model = None
+
+try:
+    with open(JSON_PATH, 'r') as f:
+        class_indices = json.load(f)
+    class_names = {int(v): k for k, v in class_indices.items()}
+    print("Class indices loaded.")
+except Exception as e:
+    print(f"Error loading class indices: {e}")
+    class_names = None
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def process_image(image_path):
+    img = Image.open(image_path)
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+    img = img.resize((224, 224))
+    img_array = img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0) 
+    img_array = img_array / 255.0 
+    return img_array
+
+def parse_prediction(class_name):
+    parts = class_name.split("___")
+    plant_type = parts[0].replace("_", " ")
+    condition = parts[1].replace("_", " ") if len(parts) > 1 else "Unknown"
+    return plant_type, condition
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    # 1. Loud Check: Did the AI Model Load?
+    if model is None:
+        return "CRITICAL ERROR: The AI model failed to load in the background. Check your Conda terminal for the exact error message."
+
+    # 2. Loud Check: Did the form send a file?
+    if 'file' not in request.files:
+        return "ERROR: The server received the request, but the file was missing."
+    
+    file = request.files['file']
+    
+    # 3. Loud Check: Is the file empty?
+    if file.filename == '':
+        return "ERROR: You clicked Analyze but didn't select an image."
+
+    # 4. Loud Check: Is the file extension allowed?
+    if not allowed_file(file.filename):
+        return f"ERROR: Invalid file type. You uploaded '{file.filename}'. Allowed types are: {ALLOWED_EXTENSIONS}"
+
+    # If it passes all checks, run the prediction!
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        try:
+            processed_img = process_image(filepath)
+            predictions = model.predict(processed_img)
+            predicted_class_index = np.argmax(predictions[0])
+            predicted_class_name = class_names[predicted_class_index]
+            confidence = float(np.max(predictions[0])) * 100
+            
+            plant_type, condition = parse_prediction(predicted_class_name)
+            is_healthy = 'healthy' in condition.lower()
+
+            return render_template(
+                "result.html",
+                plant_type=plant_type,
+                condition=condition,
+                confidence=f"{confidence:.2f}%",
+                is_healthy=is_healthy,
+                image_filename=filename
+            )
+        except Exception as e:
+            return f"ERROR DURING AI PREDICTION: {str(e)}"
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)

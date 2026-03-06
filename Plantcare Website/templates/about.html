@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<main style="flex: 1; padding-bottom: 5%;">
+    
+    <div class="about-split">
+        <div>
+            <p style="color: var(--primary-color); font-weight: 800; letter-spacing: 2px; margin-bottom: 1rem; text-transform: uppercase;">Our Mission</p>
+            <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1.5rem; line-height: 1.1;">Protecting the Future of <br>Global Agriculture</h1>
+            <p style="font-size: 1.2rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 2rem;">
+                Crop diseases cost the global economy billions of dollars every year, threatening food security and farmers' livelihoods. 
+                PlantCare AI was developed to democratize agricultural science, putting the power of a professional botany lab directly into your pocket.
+            </p>
+        </div>
+        <div>
+            <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=800&q=80" alt="Beautiful Agricultural Field" class="about-img">
+        </div>
+    </div>
+
+    <div class="mission-banner">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Early Detection Saves Crops</h2>
+        <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; opacity: 0.9;">By utilizing advanced Deep Learning, we can identify micro-patterns of fungal, bacterial, and viral infections weeks before they destroy an entire harvest.</p>
+    </div>
+
+    <div class="about-split" style="margin-top: 2rem;">
+        <div style="order: 2;"> 
+            <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--primary-color);">Powered by Convolutional Neural Networks</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.5rem;">
+                Built using the latest Keras and TensorFlow frameworks, our AI model was trained via transfer learning on thousands of high-resolution leaf images.
+            </p>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 1rem; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-circle-check" style="color: var(--primary-color);"></i> 38 Distinct Pathology Classes
+                </li>
+                <li style="margin-bottom: 1rem; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-circle-check" style="color: var(--primary-color);"></i> Trained on 10+ vital crop species
+                </li>
+            </ul>
+        </div>
+        <div style="order: 1;">
+            <img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=800&q=80" alt="Detailed Plant Leaves" class="about-img">
+        </div>
+    </div>
+
+</main>
+{% endblock %}

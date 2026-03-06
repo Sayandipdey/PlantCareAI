@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}Upload & Detect{% endblock %}
+
+{% block content %}
+<main style="min-height: 80vh; display: flex; justify-content: center; padding: 2rem 5%;">
+    <div class="feature-card" style="max-width: 600px; width: 100%; text-align: center;">
+        
+        <h2 style="margin-bottom: 0.5rem; color: var(--primary-color);">AI Disease Detection</h2>
+        <p style="margin-bottom: 2rem; color: var(--text-muted);">Upload a photo or use your camera to scan a leaf.</p>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+            <button type="button" class="btn btn-outline" id="btn-upload-tab" style="background: var(--nav-bg); color: var(--text-color); border: 2px solid var(--primary-color);">File Upload</button>
+            <button type="button" class="btn btn-outline" id="btn-camera-tab" style="background: transparent; color: var(--text-color); border: 2px solid var(--border-color);">Use Camera</button>
+        </div>
+
+        <form id="upload-form" action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data">
+            
+            <div id="section-file" style="margin-bottom: 2rem;">
+                <label for="file-input" style="display: block; padding: 3rem 1rem; border: 2px dashed var(--primary-color); border-radius: 15px; cursor: pointer; background: var(--bg-color);">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                    <p id="file-name-display">Click to browse or drag image here</p>
+                </label>
+                <input type="file" id="file-input" name="file" accept="image/*" style="display: none;">
+            </div>
+
+            <div id="section-camera" style="display: none; margin-bottom: 2rem;">
+                <video id="webcam" autoplay playsinline style="width: 100%; border-radius: 15px; background: #000; margin-bottom: 1rem; max-height: 300px; object-fit: cover;"></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <button type="button" id="btn-capture" class="btn" style="background: var(--text-color); width: 100%;">
+                    <i class="fa-solid fa-camera"></i> Capture Photo
+                </button>
+                <p id="camera-status" style="margin-top: 1rem; color: var(--primary-color); font-weight: 600; display: none;">Photo captured! Ready to analyze.</p>
+            </div>
+
+            <button type="submit" id="btn-submit" class="btn" style="width: 100%; font-size: 1.2rem; padding: 15px;">
+                <span class="spinner"></span>
+                <span class="btn-text">Analyze Leaf AI <i class="fa-solid fa-wand-magic-sparkles"></i></span>
+            </button>
+
+        </form>
+    </div>
+</main>
+
+<script>
+    // Tab Toggling Logic
+    const tabFile = document.getElementById('btn-upload-tab');
+    const tabCamera = document.getElementById('btn-camera-tab');
+    const secFile = document.getElementById('section-file');
+    const secCamera = document.getElementById('section-camera');
+
+    // Webcam Variables
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const btnCapture = document.getElementById('btn-capture');
+    const fileInput = document.getElementById('file-input');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const cameraStatus = document.getElementById('camera-status');
+    let stream = null;
+
+    // Show File Upload
+    tabFile.addEventListener('click', () => {
+        secFile.style.display = 'block';
+        secCamera.style.display = 'none';
+        tabFile.style.borderColor = 'var(--primary-color)';
+        tabCamera.style.borderColor = 'var(--border-color)';
+        if(stream) { stream.getTracks().forEach(track => track.stop()); stream = null; }
+    });
+
+    // Show Webcam
+    tabCamera.addEventListener('click', async () => {
+        secFile.style.display = 'none';
+        secCamera.style.display = 'block';
+        tabCamera.style.borderColor = 'var(--primary-color)';
+        tabFile.style.borderColor = 'var(--border-color)';
+        cameraStatus.style.display = 'none';
+
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            video.srcObject = stream;
+        } catch (err) {
+            alert("Could not access camera. Please ensure permissions are granted.");
+        }
+    });
+
+    // Capture Photo from Webcam and attach to Form
+    btnCapture.addEventListener('click', () => {
+        if(!stream) return;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        
+        // Convert Canvas to File object
+        canvas.toBlob(blob => {
+            const file = new File([blob], "webcam_capture.jpg", { type: "image/jpeg" });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files; // Inject into standard form
+            
+            cameraStatus.style.display = 'block';
+            video.pause(); // Freeze frame
+        }, 'image/jpeg');
+    });
+
+    // Update File Name Display when using Standard Upload
+    fileInput.addEventListener('change', function() {
+        if(this.files && this.files[0]) {
+            fileNameDisplay.textContent = "Selected: " + this.files[0].name;
+            fileNameDisplay.style.color = "var(--primary-color)";
+        }
+    });
+
+    // Loading Spinner Logic on Submit
+    document.getElementById('upload-form').addEventListener('submit', function(e) {
+        if(!fileInput.files.length) {
+            e.preventDefault();
+            alert("Please select a file or take a photo first!");
+            return;
+        }
+        const submitBtn = document.getElementById('btn-submit');
+        submitBtn.classList.add('loading'); // Turns on CSS spinner
+        submitBtn.disabled = true; // Prevents double-clicks
+    });
+</script>
+{% endblock %}
