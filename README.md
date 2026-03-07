@@ -149,7 +149,7 @@ The *PlantCare AI* result page provides a comprehensive breakdown of the AI's an
 ### ☁️ Development & Deployment Platform
 **Google Colab:** Used for training the deep learning model with GPU support and handling large datasets efficiently.
 
-**Render.com:** Used to deploy and host the Flask web application for online access.
+**Hugging Face.com:** Used to deploy and host the Flask web application for online access.
 
 ###  Environment & Version Control
 **Anaconda/Conda:** Used for environment management to ensure library version compatibility.
