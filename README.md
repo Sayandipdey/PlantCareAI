@@ -39,7 +39,7 @@ Input Shape: 224×224×3 (RGB).
 
 Optimizer: Adam with categorical cross-entropy loss.
 
-Accuracy: Achieved ~96.6% validation accuracy.
+Accuracy: Achieved ~93.6% validation accuracy.
 
 ## ⚙️ System Architecture
 ![PlantCare AI System](Plantcare%20Website/static/Photos/system.png)
@@ -53,7 +53,7 @@ Accuracy: Achieved ~96.6% validation accuracy.
 ### Upload Page: Features a file selector and camera integration for live leaf captures.
 ![PlantCare AI Upload](Plantcare%20Website/static/Photos/PlantCareAI_Upload.jpeg)
 
-### Result Page: Displays the processed image (224x224), the AI confidence score, and the specific plant/disease diagnosis.
+### Result Page: Displays the processed image (224x224), the AI confidence score, and recommended actions required for the specific plant/disease diagnosis.
 ![PlantCare AI Result](Plantcare%20Website/static/Photos/PlantCareAI_Result.jpeg)
 
 ### Mobile View
@@ -179,7 +179,7 @@ IoT Integration: Connecting the model to field sensors for automated health moni
 
 ## 👥 Authors / Contributors
 
-This project is **jointly developed** by **Sayan Paul** and **Sayandip Dey**.  
+This project is **jointly developed** by **SAYAN PAUL** and **SAYANDIP DEY**.  
 We worked together on Machine Learning, Backend, Frontend, and Deployment aspects of the project.  
 
 | Contributor | Role | GitHub | LinkedIn |
