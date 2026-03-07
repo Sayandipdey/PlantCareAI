@@ -26,31 +26,37 @@
             <div style="grid-column: span 2;">
                 <p style="color: var(--text-muted); font-size: 0.9rem;">AI Confidence</p>
                 <div style="background: var(--border-color); height: 10px; border-radius: 5px; margin-top: 5px; overflow: hidden;">
-                    <div style="width: {{ confidence }}; height: 100%; background: var(--primary-color);"></div>
+                    <div id="confidence-fill" style="width: 0%; height: 100%; background: var(--primary-color); transition: width 1s ease-in-out;"></div>
                 </div>
                 <p style="text-align: right; font-size: 0.8rem; margin-top: 5px;">{{ confidence }}</p>
             </div>
         </div>
 
         <div style="background: rgba(16, 172, 132, 0.1); border-left: 4px solid var(--primary-color); padding: 1.5rem; border-radius: 0 10px 10px 0; margin-bottom: 2rem;">
-            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;"><i class="fa-solid fa-list-check"></i> Recommended Actions</h3>
+            <h3 id="recommendation-title" style="margin-bottom: 1rem; font-size: 1.1rem;"><i class="fa-solid fa-list-check"></i> Recommended Actions</h3>
             <ul id="recommendation-list" style="padding-left: 1.5rem; color: var(--text-color); line-height: 1.6;">
-                </ul>
+            </ul>
         </div>
 
         <div style="text-align: center;">
             <a href="{{ url_for('upload') }}" class="btn"><i class="fa-solid fa-rotate-right"></i> Scan Another Plant</a>
         </div>
+
     </div>
 </main>
 
 <script>
-    // Grab the condition from Flask safely
     const detectedCondition = "{{ condition }}".toLowerCase();
+    const plantType = "{{ plant_type }}";
     const isHealthy = "{{ is_healthy }}" === "True";
+    const rawConfidence = "{{ confidence }}";
+    
+    const confidenceNumber = rawConfidence.match(/[\d.]+/);
+    if (confidenceNumber) {
+        document.getElementById('confidence-fill').style.width = confidenceNumber[0] + '%';
+    }
     const recList = document.getElementById('recommendation-list');
-
-    // Agricultural Advice Dictionary
+    const recTitle = document.getElementById('recommendation-title');
     const actionDatabase = {
         "healthy": [
             "Your plant looks great! Maintain current watering schedule.",
@@ -78,14 +84,19 @@
             "Apply sulfur or copper fungicides as early as possible."
         ]
     };
-
-    // Generate List
     let actions = [];
     
-    if(isHealthy) {
+    if (plantType === "Unrecognized Image") {
+        recTitle.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Upload Instructions';
+        actions = [
+            "This image does not appear to be a plant leaf.",
+            "Please upload a clear, well-lit photo of a single leaf.",
+            "Avoid uploading photos of random objects, screens, or animals.",
+            "Ensure the leaf takes up the majority of the frame for best results."
+        ];
+    } else if (isHealthy) {
         actions = actionDatabase["healthy"];
     } else {
-        // Try to match the specific disease, otherwise give a general sick plant fallback
         let matched = false;
         for (let key in actionDatabase) {
             if (detectedCondition.includes(key)) {
@@ -103,8 +114,6 @@
             ];
         }
     }
-
-    // Inject into HTML
     actions.forEach(action => {
         let li = document.createElement('li');
         li.textContent = action;
