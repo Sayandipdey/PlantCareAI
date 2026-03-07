@@ -39,7 +39,7 @@ Input Shape: 224×224×3 (RGB).
 
 Optimizer: Adam with categorical cross-entropy loss.
 
-Accuracy: Achieved ~93.6% validation accuracy.
+Accuracy: Achieved ~95% validation accuracy.
 
 ## ⚙️ System Architecture
 ![PlantCare AI System](Plantcare%20Website/static/Photos/system.png)
