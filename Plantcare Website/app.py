@@ -10,7 +10,6 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# Save uploads directly to the static folder so the browser can see them
 UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'avif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -66,28 +65,28 @@ def about():
 def upload():
     return render_template('upload.html')
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
-    # 1. Loud Check: Did the AI Model Load?
-    if model is None:
-        return "CRITICAL ERROR: The AI model failed to load in the background. Check your Conda terminal for the exact error message."
+    if request.method == 'POST':
+       
+        if model is None:
+            return "CRITICAL ERROR: The AI model failed to load in the background."
 
-    # 2. Loud Check: Did the form send a file?
-    if 'file' not in request.files:
-        return "ERROR: The server received the request, but the file was missing."
-    
-    file = request.files['file']
-    
-    # 3. Loud Check: Is the file empty?
-    if file.filename == '':
-        return "ERROR: You clicked Analyze but didn't select an image."
+       
+        if 'file' not in request.files:
+            return "ERROR: The server received the request, but the file was missing."
+        
+        file = request.files['file']
+        
+       
+        if file.filename == '':
+            return "ERROR: You clicked Analyze but didn't select an image."
 
-    # 4. Loud Check: Is the file extension allowed?
-    if not allowed_file(file.filename):
-        return f"ERROR: Invalid file type. You uploaded '{file.filename}'. Allowed types are: {ALLOWED_EXTENSIONS}"
+   
+        if not allowed_file(file.filename):
+            return f"ERROR: Invalid file type. You uploaded '{file.filename}'. Allowed types are: {ALLOWED_EXTENSIONS}"
 
-    # If it passes all checks, run the prediction!
-    if file and allowed_file(file.filename):
+       
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
@@ -95,9 +94,21 @@ def predict():
         try:
             processed_img = process_image(filepath)
             predictions = model.predict(processed_img)
+            
+            confidence = float(np.max(predictions[0])) * 100
+            
+            if confidence < 65.0:
+                return render_template(
+                    "result.html",
+                    plant_type="Unrecognized Image",
+                    condition="Not a Plant / Invalid Photo",
+                    confidence=f"{confidence:.2f}% (Too Low)",
+                    is_healthy=False,
+                    image_filename=filename
+                )
+
             predicted_class_index = np.argmax(predictions[0])
             predicted_class_name = class_names[predicted_class_index]
-            confidence = float(np.max(predictions[0])) * 100
             
             plant_type, condition = parse_prediction(predicted_class_name)
             is_healthy = 'healthy' in condition.lower()
@@ -107,11 +118,15 @@ def predict():
                 plant_type=plant_type,
                 condition=condition,
                 confidence=f"{confidence:.2f}%",
+                confidence_width=f"{confidence:.2f}%",
                 is_healthy=is_healthy,
                 image_filename=filename
             )
         except Exception as e:
             return f"ERROR DURING AI PREDICTION: {str(e)}"
+            
+    
+    return redirect(url_for('upload'))
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
