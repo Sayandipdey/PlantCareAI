@@ -185,6 +185,6 @@ We worked together on Machine Learning, Backend, Frontend, and Deployment aspect
 | Contributor | Role | GitHub | LinkedIn |
 |-------------|------|--------|----------|
 | **SAYAN PAUL** | ML, Frontend Development , Backend Integration & Deployment | [![GitHub](https://img.shields.io/badge/GitHub-OctoEcho-181717?logo=github&logoColor=white)](https://github.com/OctoEcho) | [![LinkedIn](https://img.shields.io/badge/LinkedIn-SayanPaul-blue?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sayan-paul-83a99a267/) |
-| **SAYANDIP DEY** | ML Model Development & Training, Backend DEvelopment,  API Integration | [![GitHub](https://img.shields.io/badge/GitHub-Sayandipdey-181717?logo=github&logoColor=white)](https://github.com/Sayandipdey) | [![LinkedIn](https://img.shields.io/badge/LinkedIn-SayandipDey-blue?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sayandip-dey-063693298/) |
+| **SAYANDIP DEY** | ML Model Development & Training, Backend Development,  API Integration | [![GitHub](https://img.shields.io/badge/GitHub-Sayandipdey-181717?logo=github&logoColor=white)](https://github.com/Sayandipdey) | [![LinkedIn](https://img.shields.io/badge/LinkedIn-SayandipDey-blue?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sayandip-dey-063693298/) |
 
 Also team Members **SHANTANU MONDAL** & **RAJASHREE DUTTA**
